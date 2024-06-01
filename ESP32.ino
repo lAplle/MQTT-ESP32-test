@@ -4,6 +4,7 @@
 const char* ssid = "x";
 const char* password = "x";
 const char* mqtt_server = "x";
+const char* topic = "x";
 
 const int connectingLed = 27;
 const int connectedLed = 12;
@@ -49,13 +50,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   digitalWrite(connectingLed, HIGH);
   delay(1000);
   digitalWrite(connectingLed, LOW);
+  digitalWrite(connectedLed, HIGH);
+
 }
 
 void reconnect() {
 
     if (client.connect("ESP32Client")) {
-      client.subscribe("test/topic");
-      Serial.println("Subscribed to topic '" + String(topic) +);
+      client.subscribe(topic);
+      Serial.println("Subscribed to topic '" + String(topic) + "'.");
+      digitalWrite(connectedLed, HIGH);
     } else {
       Serial.println("failed, rc=" + String(client.state()));
       Serial.println("Trying again in 5 seconds...");
@@ -70,6 +74,5 @@ void loop() {
   while (!client.connected()) {
     reconnect();
   } 
-  digitalWrite(connectedLed, HIGH);
   client.loop();
 }
